@@ -15,8 +15,10 @@ function App() {
 
     return (<div>
                 <Header />
-                <Form onAdd={addExpense}/>
-                <ExpenseTable expenseList={expenses} />
+                <div className="form-table-container">
+                    <Form onAdd={addExpense}/>
+                    <ExpenseTable expenseList={expenses} />
+                </div>
                 <Footer />
             </div>);
 }
