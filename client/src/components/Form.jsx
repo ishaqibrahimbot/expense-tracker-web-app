@@ -47,7 +47,6 @@ export default function Form(props) {
             category: "",
             date: new Date()
         });
-        event.preventDefault();
     }
     
 

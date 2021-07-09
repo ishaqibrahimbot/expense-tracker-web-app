@@ -32,7 +32,7 @@ export default function ExpenseTable(props) {
                 <TableCell classes={{root: classes.tableCell}}>{expenseEntry.description}</TableCell>
                 <TableCell classes={{root: classes.tableCell}}>{expenseEntry.amount}</TableCell>
                 <TableCell classes={{root: classes.tableCell}}>{expenseEntry.category}</TableCell>
-                <TableCell classes={{root: classes.tableCell}}>{expenseEntry.date.toLocaleString()}</TableCell>
+                <TableCell classes={{root: classes.tableCell}}>{expenseEntry.date}</TableCell>
             </TableRow>
         );
     }

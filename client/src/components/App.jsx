@@ -1,16 +1,51 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import Header from "./Header";
 import Footer from "./Footer";
 import Form from "./Form";
 import ExpenseTable from "./Table";
+const axios = require("axios");
+const qs = require("qs");
+const _ = require("lodash");
 
-function App() {
-
+function App(props) {
+    const [isLoading, setLoading] = useState(true);
     const [expenses, setExpenses] = useState([]);
+
+    function sortExpenses(unsortedExpenses) {
+        return _.orderBy(unsortedExpenses, 'date', 'desc');
+    }
+
+    useEffect(() => {
+        axios.get('/expenses')
+        .then(response => {
+            setExpenses(sortExpenses(response.data));
+            setLoading(false);
+        })
+        .catch(error => console.log(error))
+        .then(() => console.log("Successfully retrieved all expenses!"));
+    }, []);
+
+    if (isLoading) {
+        return (<div>
+            <Header />
+            <div className="form-table-container">
+                <Form onAdd={addExpense}/>
+                <ExpenseTable expenseList={[]} />
+            </div>
+            <Footer />
+        </div>)
+    }
 
     function addExpense(newExpense) {
         console.log(newExpense);
-        setExpenses(prevValue => [newExpense, ...prevValue]);
+        axios.post('/expenses', qs.stringify({
+            description: newExpense.description,
+            amount: parseFloat(newExpense.amount),
+            category: newExpense.category,
+            date: newExpense.date.toLocaleDateString()
+        }))
+        .then(response => console.log(response))
+        .catch(error => console.log(error));
     }
 
     return (<div>
