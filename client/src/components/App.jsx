@@ -3,6 +3,7 @@ import Header from "./Header";
 import Footer from "./Footer";
 import Form from "./Form";
 import ExpenseTable from "./Table";
+// import EnhancedTable from "./EnhancedTable";
 const axios = require("axios");
 const qs = require("qs");
 const _ = require("lodash");
@@ -11,14 +12,14 @@ function App(props) {
     const [isLoading, setLoading] = useState(true);
     const [expenses, setExpenses] = useState([]);
 
-    function sortExpenses(unsortedExpenses) {
-        return _.orderBy(unsortedExpenses, 'date', 'desc');
+    function sortExpensesUsingDate(unsortedExpenses) {
+        return _.orderBy(unsortedExpenses, (expenseObject => new Date(expenseObject.date)), 'desc');
     }
 
     useEffect(() => {
         axios.get('/expenses')
         .then(response => {
-            setExpenses(sortExpenses(response.data));
+            setExpenses(sortExpensesUsingDate(response.data));
             setLoading(false);
         })
         .catch(error => console.log(error))

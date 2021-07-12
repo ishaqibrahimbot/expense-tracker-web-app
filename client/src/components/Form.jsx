@@ -30,6 +30,7 @@ export default function Form(props) {
     }
 
     function handleDateChange(event) {
+        console.log(event);
         const newDate = event;
         setExpense(prevExpense => {
             return {
@@ -42,10 +43,9 @@ export default function Form(props) {
     function submitExpense(event) {
         props.onAdd(expense);
         setExpense({
-            description: "",
-            amount: "",
-            category: "",
-            date: new Date()
+                description: "",
+                amount: "",
+                category: "",
         });
     }
     
@@ -91,7 +91,7 @@ export default function Form(props) {
 
                 <div className="submit-button">
                 <Button 
-                    type="submit" 
+                    type="submit"
                     onClick={submitExpense} 
                     variant="contained" 
                     color="primary">Add
