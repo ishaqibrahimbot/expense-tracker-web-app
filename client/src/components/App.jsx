@@ -2,24 +2,19 @@ import React, {useState, useEffect} from "react";
 import Header from "./Header";
 import Footer from "./Footer";
 import Form from "./Form";
-import ExpenseTable from "./Table";
-// import EnhancedTable from "./EnhancedTable";
+import EnhancedTable from "./EnhancedTable";
 const axios = require("axios");
 const qs = require("qs");
-const _ = require("lodash");
 
 function App(props) {
     const [isLoading, setLoading] = useState(true);
     const [expenses, setExpenses] = useState([]);
 
-    function sortExpensesUsingDate(unsortedExpenses) {
-        return _.orderBy(unsortedExpenses, (expenseObject => new Date(expenseObject.date)), 'desc');
-    }
 
     useEffect(() => {
         axios.get('/expenses')
         .then(response => {
-            setExpenses(sortExpensesUsingDate(response.data));
+            setExpenses(response.data);
             setLoading(false);
         })
         .catch(error => console.log(error))
@@ -31,7 +26,7 @@ function App(props) {
             <Header />
             <div className="form-table-container">
                 <Form onAdd={addExpense}/>
-                <ExpenseTable expenseList={[]} />
+                <EnhancedTable expenseList={[]} />
             </div>
             <Footer />
         </div>)
@@ -49,11 +44,28 @@ function App(props) {
         .catch(error => console.log(error));
     }
 
+    function deleteExpense(selectedExpenses) {
+
+        let idString = "";
+        selectedExpenses.forEach(expenseItem => {
+            idString = idString + expenseItem.id.toString() + "+";
+        });
+        idString = idString.slice(0, -1);
+
+        axios.delete(`/expenses/${idString}`)
+        .then(response => console.log(response))
+        .catch(error => console.log(error))
+        .then(() => {
+            console.log("Successfully deleted the expenses!");
+            setExpenses(prevExpenses => (prevExpenses.filter(expenseItem => !(selectedExpenses.includes(expenseItem)))));
+        });
+    }
+
     return (<div>
                 <Header />
                 <div className="form-table-container">
                     <Form onAdd={addExpense}/>
-                    <ExpenseTable expenseList={expenses} />
+                    <EnhancedTable expenseList={expenses} onDelete={deleteExpense} />
                 </div>
                 <Footer />
             </div>);

@@ -5,18 +5,34 @@ import {lighten, makeStyles} from "@material-ui/core/styles";
 import {Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TableSortLabel} from "@material-ui/core";
 import Toolbar from "@material-ui/core/Toolbar";
 import { Typography, Paper, Checkbox, IconButton, Tooltip, FormControlLabel, Switch } from "@material-ui/core";
-import { DeleteIcon, FilterListIcon } from "@material-ui/icons";
+import DeleteIcon from "@material-ui/icons/Delete";
+import FilterListIcon from "@material-ui/icons/FilterList";
 
 // Now we have some kind of functions that enhance the basic sorting function already present in JS.
 
 function descendingComparator(a, b, orderBy) {
-    if (b[orderBy] < a[orderBy]) {
-        return -1;
+    
+    if (orderBy === "date") {
+        let a_date = new Date(a[orderBy]);
+        let b_date = new Date(b[orderBy]);
+
+        if (b_date < a_date) {
+            return 1;
+        }
+        if (b_date > a_date) {
+            return -1;
+        }
+        return 0;
+
+    } else {
+        if (b[orderBy] < a[orderBy]) {
+            return -1;
+        }
+        if (b[orderBy] > a[orderBy]) {
+            return 1;
+        }
+        return 0;
     }
-    if (b[orderBy] > a[orderBy]) {
-        return 1;
-    }
-    return 0;
 }
 
 function getComparator(order, orderBy) {
@@ -62,7 +78,8 @@ function EnhancedTableHead(props) {
                 {headCells.map(headCell => (
                     <TableCell 
                         key={headCell.id}
-                        align={headCell.numeric ? 'right' : 'left'}
+                        className={classes.tableHeader}
+                        align='left'
                         padding={headCell.disablePadding ? 'none' : 'default'}
                         sortDirection={orderBy === headCell.id ? order : false}>
                         <TableSortLabel 
@@ -98,6 +115,7 @@ const useToolbarStyles = makeStyles(theme => ({
     root: {
         paddingLeft: theme.spacing(2),
         paddingRight: theme.spacing(1),
+        marginTop: "20px"
     },
     highlight:
         theme.palette.type === 'light'
@@ -111,12 +129,16 @@ const useToolbarStyles = makeStyles(theme => ({
         },
     title: {
         flex: '1 1 100%',
+        fontSize: "1.25rem",
+        fontFamily: "'Montserrat', sans-serif",
+        textAlign: "center",
+        fontWeight: "600"
     },
 }));
 
 function EnhancedTableToolbar(props) {
     const classes = useToolbarStyles();
-    const {numSelected} = props;
+    const {numSelected, onDelete} = props;
 
     return (
         <Toolbar className={clsx(classes.root, {
@@ -135,7 +157,7 @@ function EnhancedTableToolbar(props) {
 
             {numSelected > 0 ? (
                 <Tooltip title="Delete">
-                    <IconButton aria-label="delete">
+                    <IconButton aria-label="delete" onClick={() => onDelete()}>
                         <DeleteIcon />
                     </IconButton>
                 </Tooltip>
@@ -160,10 +182,17 @@ const useStyles = makeStyles(theme => ({
     },
     paper: {
         width: "100%",
+        backgroundColor: "whitesmoke",
+        borderRadius: "20px",
         marginBottom: theme.spacing(2)
     },
     table: {
         minWidth: 750
+    },
+    tableHeader: {
+        fontFamily: "'Montserrat', sans-serif",
+        fontSize: "0.9rem",
+        fontWeight: "600"
     },
     visuallyHidden: {
         border: 0,
@@ -184,10 +213,11 @@ export default function EnhancedTable(props) {
     const [orderBy, setOrderBy] = useState('date');
     const [selected, setSelected] = useState([]);
     const [page, setPage] = useState(0);
-    const [dense, setDense] = useState(false);
-    const [rowsPerPage, setRowsPerPage] = useState(6);
+    const [dense, setDense] = useState(true);
+    const [rowsPerPage, setRowsPerPage] = useState(10);
 
-    const {expenseList} = props;
+    const {expenseList, onDelete} = props;
+    
 
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
@@ -213,7 +243,7 @@ export default function EnhancedTable(props) {
         } else if (selectedIndex === 0) {
             newSelected = newSelected.concat(selected.slice(1));
         } else if (selectedIndex === selected.length - 1) {
-            newSelected = newSelected.concat(selected(0, -1));
+            newSelected = newSelected.concat(selected.slice(0, -1));
         } else if (selectedIndex > 0) {
             newSelected = newSelected.concat(
                 selected.slice(0, selectedIndex),
@@ -237,6 +267,12 @@ export default function EnhancedTable(props) {
         setDense(event.target.checked);
     };
 
+    const handleDelete = () => {
+        const selectedExpenses = expenseList.filter(expenseItem => (selected.includes(expenseItem.description)));
+        onDelete(selectedExpenses);
+        setSelected([]);
+    };
+
     const isSelected = name => selected.indexOf(name) !== -1;
 
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, expenseList.length - page * rowsPerPage);
@@ -244,7 +280,7 @@ export default function EnhancedTable(props) {
     return (
         <div className={classes.root}>
             <Paper className={classes.paper}>
-                <EnhancedTableToolbar numSelected={selected.length} />
+                <EnhancedTableToolbar numSelected={selected.length} onDelete={handleDelete}/>
                 <TableContainer>
                     <Table 
                         className={classes.table}

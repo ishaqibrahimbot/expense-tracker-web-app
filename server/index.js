@@ -27,6 +27,18 @@ const app = express();
 app.use(express.urlencoded({extended: true}));
 
 
+/// Take array of ids and return a string fit for SQL query
+
+function stringifyIds(idsToBeDeleted) {
+    let sqlString = "(";
+    idsToBeDeleted.forEach(id => {
+        sqlString = sqlString + id + ",";
+    });
+    sqlString = sqlString.slice(0, -1) + ")";
+    return sqlString;
+}
+
+
 // Add expense entry
 
 app.post("/expenses", (req, res) => {
@@ -56,6 +68,25 @@ app.get("/expenses", (req, res) => {
         } else {
             console.log(result);
             res.send(JSON.stringify(result));
+        }
+    });
+});
+
+// Delete Expense
+
+app.delete("/expenses/:idString", (req, res) => {
+    const idString = req.params.idString;
+    const idsToBeDeleted = idString.split('+');
+    const sqlIdString = stringifyIds(idsToBeDeleted);
+
+    let sql = `DELETE FROM expenses WHERE id IN ${sqlIdString}`;
+ 
+    db.query(sql, (err, result) => {
+        if (err) {
+            throw err;
+        } else {
+            console.log(result);
+            res.send("Deleted the post...");
         }
     });
 });
@@ -127,18 +158,4 @@ app.listen(PORT, () => {
 //     });
 // });
 
-// Delete Expense
-
-// app.get("/deleteexpense/:id", (req, res) => {
-//     const id = req.params.id;
-//     let sql = `DELETE FROM expenses WHERE id = ${id}`;
-//     db.query(sql, (err, result) => {
-//         if (err) {
-//             console.log(err);
-//         } else {
-//             console.log(result);
-//             res.send("Deleted the post...");
-//         }
-//     });
-// });
 
