@@ -6,13 +6,15 @@ import EnhancedTable from "./EnhancedTable";
 const axios = require("axios");
 const qs = require("qs");
 
+const PORT = process.env.PORT || 3001;
+
 function App(props) {
     const [isLoading, setLoading] = useState(true);
     const [expenses, setExpenses] = useState([]);
 
 
     useEffect(() => {
-        axios.get('/expenses')
+        axios.get(`http://localhost:${PORT}/expenses`)
         .then(response => {
             console.log(response.data);
             setExpenses(response.data);
