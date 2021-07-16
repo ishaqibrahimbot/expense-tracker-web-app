@@ -1,8 +1,10 @@
 const express = require("express");
 const mysql = require("mysql");
+const path = require('path');
 
 // Create MySQL connection
-const db = mysql.createConnection({
+
+const db = mysql.createConnection(process.env.JAWSDB_URL ? process.env.JAWSDB_URL : {
     host: "localhost",
     user: "root",
     password: "",
@@ -26,6 +28,13 @@ const PORT = process.env.PORT || 3001;
 const app = express();
 app.use(express.urlencoded({extended: true}));
 
+/// Have node serve the files for our built React app
+app.use(express.static(path.resolve(__dirname, '../client/build')))
+
+/// All non-defined get requests will return our react app
+app.get('*', (req, res) => {
+    res.sendFile(path.resolve(__dirname, '../client/build', 'index.html'));
+});
 
 /// Take array of ids and return a string fit for SQL query
 
@@ -90,6 +99,7 @@ app.delete("/expenses/:idString", (req, res) => {
         }
     });
 });
+
 
 
 app.listen(PORT, () => {

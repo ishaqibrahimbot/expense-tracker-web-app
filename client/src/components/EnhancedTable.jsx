@@ -178,7 +178,8 @@ EnhancedTableToolbar.propTypes = {
 
 const useStyles = makeStyles(theme => ({
     root: {
-        width: "100%"
+        width: "100%",
+        position: "relative",
     },
     paper: {
         width: "100%",
@@ -187,7 +188,7 @@ const useStyles = makeStyles(theme => ({
         marginBottom: theme.spacing(2)
     },
     table: {
-        minWidth: 750
+        minWidth: 600
     },
     tableHeader: {
         fontFamily: "'Montserrat', sans-serif",
