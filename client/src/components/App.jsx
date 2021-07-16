@@ -20,7 +20,7 @@ function App(props) {
         })
         .catch(error => console.log(error))
         .then(() => console.log("Successfully retrieved all expenses!"));
-    }, []);
+    }, [expenses]);
 
     if (isLoading) {
         return (<div>

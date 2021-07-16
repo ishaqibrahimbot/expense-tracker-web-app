@@ -46,7 +46,9 @@ export default function Form(props) {
                 description: "",
                 amount: "",
                 category: "",
+                date: new Date()
         });
+        event.preventDefault();
     }
     
 
