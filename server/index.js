@@ -28,13 +28,16 @@ const PORT = process.env.PORT || 3001;
 const app = express();
 app.use(express.urlencoded({extended: true}));
 
-/// Have node serve the files for our built React app
-app.use(express.static(path.resolve(__dirname, '../client/build')))
+if (process.env.NODE_ENV === 'production') {
+    /// Have node serve the files for our built React app
+    app.use(express.static(path.resolve(__dirname, '../client/build')));
 
-/// All non-defined get requests will return our react app
-app.get('*', (req, res) => {
-    res.sendFile(path.resolve(__dirname, '../client/build', 'index.html'));
-});
+    /// All non-defined get requests will return our react app
+    app.get('*', (req, res) => {
+        res.sendFile(path.resolve(__dirname, '../client/build', 'index.html'));
+    });
+}
+
 
 /// Take array of ids and return a string fit for SQL query
 
