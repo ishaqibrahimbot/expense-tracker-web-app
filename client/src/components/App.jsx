@@ -14,6 +14,7 @@ function App(props) {
     useEffect(() => {
         axios.get('/expenses')
         .then(response => {
+            console.log(response.data);
             setExpenses(response.data);
             setLoading(false);
         })
