@@ -53,8 +53,10 @@ app.post("/expenses", (req, res) => {
     db.query(sql, expense, (err, result) => {
         if (err) {
             console.log(err);
+            res.send(err);
         } else {
             console.log(`Successfully added:\n${expense}`);
+            res.send("Successfully added a new entry...");
         }
     });
 });

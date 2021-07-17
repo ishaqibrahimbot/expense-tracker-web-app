@@ -6,12 +6,11 @@ import EnhancedTable from "./EnhancedTable";
 const axios = require("axios");
 const qs = require("qs");
 
-function App(props) {
+function App() {
     const [isLoading, setLoading] = useState(true);
     const [expenses, setExpenses] = useState([]);
 
-
-    useEffect(() => {
+    function fetchData() {
         axios.get('/expenses')
         .then(response => {
             console.log(response.data);
@@ -20,7 +19,11 @@ function App(props) {
         })
         .catch(error => console.log(error))
         .then(() => console.log("Successfully retrieved all expenses!"));
-    }, [expenses]);
+    }
+
+    useEffect(() => {
+        fetchData();
+    }, []);
 
     if (isLoading) {
         return (<div>
@@ -42,7 +45,8 @@ function App(props) {
             date: newExpense.date.toLocaleDateString()
         }))
         .then(response => console.log(response))
-        .catch(error => console.log(error));
+        .catch(error => console.log(error))
+        .then(() => fetchData());
     }
 
     function deleteExpense(selectedExpenses) {
@@ -56,10 +60,7 @@ function App(props) {
         axios.delete(`/expenses/${idString}`)
         .then(response => console.log(response))
         .catch(error => console.log(error))
-        .then(() => {
-            console.log("Successfully deleted the expenses!");
-            setExpenses(prevExpenses => (prevExpenses.filter(expenseItem => !(selectedExpenses.includes(expenseItem)))));
-        });
+        .then(() => fetchData());
     }
 
     return (<div>
