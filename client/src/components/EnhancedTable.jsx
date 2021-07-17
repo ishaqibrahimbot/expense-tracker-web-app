@@ -78,7 +78,7 @@ function EnhancedTableHead(props) {
                 {headCells.map(headCell => (
                     <TableCell 
                         key={headCell.id}
-                        className={classes.tableHeader}
+                        className={classes.tableHeaderMobile}
                         align='left'
                         padding={headCell.disablePadding ? 'none' : 'default'}
                         sortDirection={orderBy === headCell.id ? order : false}>
@@ -176,6 +176,7 @@ EnhancedTableToolbar.propTypes = {
     numSelected: PropTypes.number.isRequired,
 };
 
+
 const useStyles = makeStyles(theme => ({
     root: {
         width: "100%",
@@ -188,12 +189,20 @@ const useStyles = makeStyles(theme => ({
         marginBottom: theme.spacing(2)
     },
     table: {
-        minWidth: 600
+        minWidth: 400,
     },
     tableHeader: {
         fontFamily: "'Montserrat', sans-serif",
         fontSize: "0.9rem",
         fontWeight: "600"
+    },
+    tableHeaderMobile: {
+        fontFamily: "'Montserrat', sans-serif",
+        fontSize: "0.6rem",
+        fontWeight: "600",
+    },
+    tableCellMobile: {
+        fontSize: "0.7rem",
     },
     visuallyHidden: {
         border: 0,
@@ -321,12 +330,16 @@ export default function EnhancedTable(props) {
                                                     inputProps={{'aria-labelledby': labelId}}
                                                 />
                                             </TableCell>
-                                            <TableCell component="th" id={labelId} scope="row" padding="none">
+                                            <TableCell  component="th"
+                                                        id={labelId}
+                                                        className={classes.tableCellMobile}
+                                                        scope="row" 
+                                                        padding="none">
                                                 {expenseItem.description}
                                             </TableCell>
-                                            <TableCell>{expenseItem.amount}</TableCell>
-                                            <TableCell>{expenseItem.category}</TableCell>
-                                            <TableCell>{expenseItem.date}</TableCell>
+                                            <TableCell className={classes.tableCellMobile}>{expenseItem.amount}</TableCell>
+                                            <TableCell className={classes.tableCellMobile}>{expenseItem.category}</TableCell>
+                                            <TableCell className={classes.tableCellMobile}>{expenseItem.date}</TableCell>
                                         </TableRow>
                                     );
                                 })}

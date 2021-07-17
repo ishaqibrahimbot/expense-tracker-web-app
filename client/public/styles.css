@@ -136,7 +136,7 @@ footer p {
         display: flex;
         flex-direction: column;
         justify-content: space-evenly;
-        margin: 30px 40px;
+        margin: 30px 10px;
     }    
 
     .input-form {
@@ -145,7 +145,7 @@ footer p {
         margin: 50px auto;
         flex-direction: column;
         justify-content: space-around;
-        width: 300px;
+        width: 200px;
         background-color: whitesmoke;
         padding: 5%;
         padding-top: 5px;
