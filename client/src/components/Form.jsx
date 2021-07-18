@@ -42,12 +42,12 @@ export default function Form(props) {
 
     function submitExpense(event) {
         props.onAdd(expense);
-        setExpense({
+        setExpense(prevExpense => ({
                 description: "",
                 amount: "",
                 category: "",
-                date: new Date()
-        });
+                date: prevExpense.date,
+        }));
         event.preventDefault();
     }
     
