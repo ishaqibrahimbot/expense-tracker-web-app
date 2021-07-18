@@ -42,7 +42,7 @@ function App() {
             description: newExpense.description,
             amount: parseFloat(newExpense.amount),
             category: newExpense.category,
-            date: newExpense.date.toLocaleDateString()
+            date: newExpense.date,
         }))
         .then(response => console.log(response))
         .catch(error => console.log(error))

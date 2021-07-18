@@ -283,6 +283,13 @@ export default function EnhancedTable(props) {
         setSelected([]);
     };
 
+    function getStandardDateString(dateString) {
+        let date = new Date(dateString);
+        const [year, month, day] = [date.getFullYear(), date.getMonth(), date.getDate()];
+        const newDateString = day.toString() + "-" + (month+1).toString() + "-" + year.toString();
+        return newDateString;
+    }
+
     const isSelected = name => selected.indexOf(name) !== -1;
 
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, expenseList.length - page * rowsPerPage);
@@ -339,7 +346,7 @@ export default function EnhancedTable(props) {
                                             </TableCell>
                                             <TableCell className={classes.tableCellMobile}>{expenseItem.amount}</TableCell>
                                             <TableCell className={classes.tableCellMobile}>{expenseItem.category}</TableCell>
-                                            <TableCell className={classes.tableCellMobile}>{expenseItem.date}</TableCell>
+                                            <TableCell className={classes.tableCellMobile}>{getStandardDateString(expenseItem.date)}</TableCell>
                                         </TableRow>
                                     );
                                 })}
