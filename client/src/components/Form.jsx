@@ -5,7 +5,7 @@ import DatePicker from "react-date-picker";
 
 export default function Form(props) {
 
-    const options = ["Groceries", "Zainab", "Fuel", "Subscriptions", "Miscellaneous"];
+    const options = ["Groceries", "Zainab", "Fuel", "Subscriptions", "Food", "Miscellaneous"];
 
     const [expense, setExpense] = useState({
         description: "",
