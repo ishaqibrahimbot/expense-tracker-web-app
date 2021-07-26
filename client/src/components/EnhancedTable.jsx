@@ -7,6 +7,7 @@ import Toolbar from "@material-ui/core/Toolbar";
 import { Typography, Paper, Checkbox, IconButton, Tooltip, FormControlLabel, Switch } from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
 import FilterListIcon from "@material-ui/icons/FilterList";
+import MediaQuery from 'react-responsive';
 
 // Now we have some kind of functions that enhance the basic sorting function already present in JS.
 
@@ -52,14 +53,14 @@ function stableSort(array, comparator) {
 }
 
 const headCells = [
-    { id: 'description', numeric: false, disablePadding: true, label: 'Description'},
+    { id: 'description', numeric: false, disablePadding: false, label: 'Description'},
     { id: 'amount', numeric: true, disablePadding: false, label: 'Amount'},
     { id: 'category', numeric: false, disablePadding: false, label: 'Category'},
     { id: 'date', numeric: false, disablePadding: false, label: 'Date'}    
 ];
 
 function EnhancedTableHead(props) {
-    const { classes, onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } = props;
+    const { classes, order, orderBy, onRequestSort } = props;
     const createSortHandler = (property) => (event) => {
         onRequestSort(event, property);
     };
@@ -67,14 +68,9 @@ function EnhancedTableHead(props) {
     return (
         <TableHead>
             <TableRow>
-                <TableCell padding="checkbox">
-                    <Checkbox 
-                        indeterminate={numSelected > 0 && numSelected < rowCount}
-                        checked={rowCount > 0 && numSelected === rowCount}
-                        onChange={onSelectAllClick}
-                        inputProps={{ 'aria-label': 'Select all expenses' }} 
-                    />
-                </TableCell>
+                <MediaQuery minWidth={520}>
+                    <TableCell padding="checkbox"></TableCell>
+                </MediaQuery>
                 {headCells.map(headCell => (
                     <TableCell 
                         key={headCell.id}
@@ -189,7 +185,6 @@ const useStyles = makeStyles(theme => ({
         marginBottom: theme.spacing(2)
     },
     table: {
-        minWidth: 400,
     },
     tableHeader: {
         fontFamily: "'Montserrat', sans-serif",
@@ -227,6 +222,9 @@ export default function EnhancedTable(props) {
     const [rowsPerPage, setRowsPerPage] = useState(10);
 
     const {expenseList, onDelete} = props;
+
+    let numSelected = selected.length;
+    let rowCount = expenseList.length;
     
 
     const handleRequestSort = (event, property) => {
@@ -307,12 +305,9 @@ export default function EnhancedTable(props) {
                     >
                         <EnhancedTableHead
                             classes={classes}
-                            numSelected={selected.length}
                             order={order}
                             orderBy={orderBy}
-                            onSelectAllClick={handleSelectAllClick}
                             onRequestSort={handleRequestSort}
-                            rowCount={expenseList.length}
                         />
                         <TableBody>
                             {stableSort(expenseList, getComparator(order, orderBy))
@@ -331,17 +326,19 @@ export default function EnhancedTable(props) {
                                             key={expenseItem.description}
                                             selected={isItemSelected}
                                         >
-                                            <TableCell padding="checkbox">
-                                                <Checkbox 
-                                                    checked={isItemSelected}
-                                                    inputProps={{'aria-labelledby': labelId}}
-                                                />
-                                            </TableCell>
+                                            <MediaQuery minWidth={520}>
+                                                <TableCell padding="checkbox">
+                                                    <Checkbox 
+                                                        checked={isItemSelected}
+                                                        inputProps={{'aria-labelledby': labelId}}
+                                                    />
+                                                </TableCell>
+                                            </MediaQuery>
                                             <TableCell  component="th"
                                                         id={labelId}
                                                         className={classes.tableCellMobile}
                                                         scope="row" 
-                                                        padding="none">
+                                                        padding="normal">
                                                 {expenseItem.description}
                                             </TableCell>
                                             <TableCell className={classes.tableCellMobile}>{expenseItem.amount}</TableCell>
@@ -358,6 +355,16 @@ export default function EnhancedTable(props) {
                         </TableBody>
                     </Table>
                 </TableContainer>
+                <div style={{textAlign: 'center'}}>
+                    <Checkbox 
+                            indeterminate={numSelected > 0 && numSelected < rowCount}
+                            checked={rowCount > 0 && numSelected === rowCount}
+                            onChange={handleSelectAllClick}
+                            inputProps={{ 'aria-label': 'Select all expenses' }}
+                            style={{display: "inline-block"}}
+                        />
+                        <p style={{display: "inline-block", fontSize: "0.8rem"}}>Select/Deselect All</p>
+                </div>  
                 <TablePagination 
                     rowsPerPageOptions={[5, 10, 25]}
                     component="div"

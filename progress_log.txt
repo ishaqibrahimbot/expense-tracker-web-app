@@ -1,0 +1,43 @@
+<-- 26th July, 2021 -->
+
+Okay so right now we have a basic app that is mildly responsive, i.e. adapts to the mobile screen. The only problem there yet to be fixed is that
+all the columns of the table do not appear on the screen. One possible solution to that is to remove the checkbox column altogether and see what happens.
+Other than that, I still need to learn how to incorporate the responsiveness via React. So here is a list of to-do items based on the above analysis:
+
+1) Test: remove the checkbox column and see if that allows all remaining columns to appear on mobile screen. (note: It's best to do this using the responsive
+way so as to not lose the code for the checkboxes altogether. So I will have to incorporate the responsiveness with this)
+2) Correction: Change all widths, paddings, and margins to percentages since that is the foundation of responsive design (this might fix the above problem as well)
+3) Finalize the responsive design such that we have a good view for desktop and a good view for mobile.
+
+Next, we move on to incorporating 'Users'. The general idea is that a person should be able to login and access their own list of expenses. For this, I will need:
+
+- A login/register page that redirects to the app. Here, it would be essential to remember sessions and keep a user logged in on the same device. Passport should be
+able to help with this.
+
+As for the database, there are two ways to go about it:
+
+1) Have a master table for all expenses from all users, but an additional column which carries the name of the user who made that expense. This particular
+entry can then be linked to another table that stores the name and details of all the users we have registered with us. This would prevent duplication of 
+tables for each user and simplify the design of the database. One table for expenses, one for users, and both are cross-referenced.
+
+Note that this does run into a potential problem. I have set the categories based on my own preferences. Different users may want to keep different categories.
+I would have to build a separate functionality to let users edit the categories they wish to keep. The best way to do this would probably be to give a few basic
+categories like 'groceries', 'food', 'transport', 'miscellaneous', and 'bills', and then let users add their own categories straight from the drop-down list.
+On the database side, this would need a new table for all the categories. Each category would have to be linked to an individual user who created it.
+
+Maybe, a better approach for this would be to have a separate table for the custom categories of each user. This would simplify addition and deletion of
+categories by individual users. Yes this is how to proceed. So you supply a basic table of categories, and let the user add or delete categories straight from the
+dropdown menu.
+
+Actually, scratch the (2) that is supposed to follow about the ways to go about the database. I'm going with everything I've described above. Here is a list of to-do's
+for this:
+
+1) Make a skeleton for the login/registration page.
+2) Study how passport works and incorporate login. Breaking this down further:
+	- A new table created for users, and every time someone registers a new user is added to that table
+	- Every time a new user is added, a new table with the basic categories only is created (only basic for the time being)
+	- A search query gathers all the expenses from the expenses table tagged for this particular user logged in and returns it
+	- Login state persists until the user logs out manually. (figure out how to do this using passport)
+3) Add functionality to add/delete categories. This is going to be handled quite simply: just update the categories table for THAT PARTICULAR USER.
+
+I think this is a lot set out. Should probably take a week or more, maybe. Let's start!
