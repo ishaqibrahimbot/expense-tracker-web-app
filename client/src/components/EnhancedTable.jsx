@@ -195,12 +195,14 @@ const useStyles = makeStyles(theme => ({
         fontFamily: "'Montserrat', sans-serif",
         fontSize: "0.5rem",
         fontWeight: "600",
+        padding: "6px 10px 6px 10px",
     },
     tableCell: {
         fontSize: "0.8rem",
     },
     tableCellMobile: {
         fontSize: "0.5rem",
+        padding: "6px 10px 6px 10px",
     },
     visuallyHidden: {
         border: 0,
