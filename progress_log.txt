@@ -41,3 +41,21 @@ for this:
 3) Add functionality to add/delete categories. This is going to be handled quite simply: just update the categories table for THAT PARTICULAR USER.
 
 I think this is a lot set out. Should probably take a week or more, maybe. Let's start!
+
+<-- 29th July -->
+
+Okay so here are the updates:
+
+1) I successfully incorporated media queries in React to remove the checkbox column. However, it did not have the intended effect, i.e. on my mobile screen the last date
+column is still outside the screen. The only remaining option for me is to play around with the font size and reduce it. Note that I did run into a problem: I would still
+need the 'Select All' checkbox which is in the column headers row. I could not remove that, so I instead repositioned it below the table with a label that identifies its
+function. This may seem a bit weird but I'm gonna leave it there for now.
+
+2) Most widths, paddings, etc. were already in percentages, but there are still some left so I should probably fix that. Just go through all the css code and the 
+styles created in the React app and do a trial-and-error to fix them.
+
+3) I do generally have a decent view for mobile and desktop, just need to complete (2) and try out the effect of reducing font size in a responsive way.
+
+
+As for using passport, I think it would be much better to first just clone and go through the example they've provided using a MySQL database before implementing it
+in my app. So yeah I'll do that as the next step.

@@ -7,7 +7,7 @@ import Toolbar from "@material-ui/core/Toolbar";
 import { Typography, Paper, Checkbox, IconButton, Tooltip, FormControlLabel, Switch } from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
 import FilterListIcon from "@material-ui/icons/FilterList";
-import MediaQuery from 'react-responsive';
+import MediaQuery, {useMediaQuery} from 'react-responsive';
 
 // Now we have some kind of functions that enhance the basic sorting function already present in JS.
 
@@ -60,7 +60,7 @@ const headCells = [
 ];
 
 function EnhancedTableHead(props) {
-    const { classes, order, orderBy, onRequestSort } = props;
+    const { classes, order, orderBy, onRequestSort, isMobile} = props;
     const createSortHandler = (property) => (event) => {
         onRequestSort(event, property);
     };
@@ -74,7 +74,7 @@ function EnhancedTableHead(props) {
                 {headCells.map(headCell => (
                     <TableCell 
                         key={headCell.id}
-                        className={classes.tableHeaderMobile}
+                        className={isMobile ? classes.tableHeaderMobile : classes.tableHeader}
                         align='left'
                         padding={headCell.disablePadding ? 'none' : 'default'}
                         sortDirection={orderBy === headCell.id ? order : false}>
@@ -181,7 +181,7 @@ const useStyles = makeStyles(theme => ({
     paper: {
         width: "100%",
         backgroundColor: "whitesmoke",
-        borderRadius: "20px",
+        borderRadius: "1.6rem",
         marginBottom: theme.spacing(2)
     },
     table: {
@@ -193,11 +193,14 @@ const useStyles = makeStyles(theme => ({
     },
     tableHeaderMobile: {
         fontFamily: "'Montserrat', sans-serif",
-        fontSize: "0.6rem",
+        fontSize: "0.5rem",
         fontWeight: "600",
     },
+    tableCell: {
+        fontSize: "0.8rem",
+    },
     tableCellMobile: {
-        fontSize: "0.7rem",
+        fontSize: "0.5rem",
     },
     visuallyHidden: {
         border: 0,
@@ -225,6 +228,9 @@ export default function EnhancedTable(props) {
 
     let numSelected = selected.length;
     let rowCount = expenseList.length;
+
+    const isMobile = useMediaQuery({query: '(max-width: 520px'});
+    // const isDesktop = useMediaQuery({query: '(min-width: 520px'});
     
 
     const handleRequestSort = (event, property) => {
@@ -308,6 +314,7 @@ export default function EnhancedTable(props) {
                             order={order}
                             orderBy={orderBy}
                             onRequestSort={handleRequestSort}
+                            isMobile={isMobile ? true : false}
                         />
                         <TableBody>
                             {stableSort(expenseList, getComparator(order, orderBy))
@@ -336,14 +343,14 @@ export default function EnhancedTable(props) {
                                             </MediaQuery>
                                             <TableCell  component="th"
                                                         id={labelId}
-                                                        className={classes.tableCellMobile}
+                                                        className={isMobile ? classes.tableCellMobile : classes.tableCell}
                                                         scope="row" 
                                                         padding="normal">
                                                 {expenseItem.description}
                                             </TableCell>
-                                            <TableCell className={classes.tableCellMobile}>{expenseItem.amount}</TableCell>
-                                            <TableCell className={classes.tableCellMobile}>{expenseItem.category}</TableCell>
-                                            <TableCell className={classes.tableCellMobile}>{getStandardDateString(expenseItem.date)}</TableCell>
+                                            <TableCell className={isMobile ? classes.tableCellMobile : classes.tableCell}>{expenseItem.amount}</TableCell>
+                                            <TableCell className={isMobile ? classes.tableCellMobile : classes.tableCell}>{expenseItem.category}</TableCell>
+                                            <TableCell className={isMobile ? classes.tableCellMobile : classes.tableCell}>{getStandardDateString(expenseItem.date)}</TableCell>
                                         </TableRow>
                                     );
                                 })}
