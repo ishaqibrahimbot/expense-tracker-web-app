@@ -1,6 +1,7 @@
 const express = require("express");
 const mysql = require("mysql");
 const path = require('path');
+const cors = require("cors");
 
 // Create MySQL connection
 
@@ -27,6 +28,7 @@ const PORT = process.env.PORT || 3001;
 
 const app = express();
 app.use(express.urlencoded({extended: true}));
+app.use(cors());
 
 /// Take array of ids and return a string fit for SQL query
 
@@ -39,6 +41,14 @@ function stringifyIds(idsToBeDeleted) {
     return sqlString;
 }
 
+
+//////////////Hande Logins///////////////
+
+app.post("/login", (req, res) => {
+    res.send({
+        token: 'test123'
+    });
+});
 
 // Add expense entry
 
