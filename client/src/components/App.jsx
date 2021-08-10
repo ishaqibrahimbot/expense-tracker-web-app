@@ -1,10 +1,13 @@
-import React, {useState} from "react";
+import React from "react";
 import HomePage from "./HomePage";
 import ExpenseApp from "./ExpenseApp";
 import {BrowserRouter, Route, Switch} from "react-router-dom";
+import useToken from "../useToken";
+
 
 export default function App() {
-    const [token, setToken] = useState();
+
+    const {setToken, token} = useToken();
 
     if(!token) {
         return <HomePage setToken={setToken}/>;

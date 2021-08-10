@@ -2,6 +2,7 @@ const express = require("express");
 const mysql = require("mysql");
 const path = require('path');
 const cors = require("cors");
+const {GenerateJWT, ValidateJWT, DecodeJWT} = require("./tokenManager.js");
 
 // Create MySQL connection
 
@@ -42,17 +43,30 @@ function stringifyIds(idsToBeDeleted) {
 }
 
 
-//////////////Hande Logins///////////////
+//////////////Handle Sign Ups and Logins///////////////
+
+app.post("/register", (req, res) => {
+    //Get the username and password details
+    const {username, password} = req.body;
+    
+});
+
 
 app.post("/login", (req, res) => {
+    
+    //If so, make claims with username and userID, generate JWT, and send it back
     res.send({
         token: 'test123'
     });
 });
 
+
+
 // Add expense entry
 
 app.post("/expenses", (req, res) => {
+
+    //Run the below code with a modified query that selects details for userID
 
     let expense = {
         ...req.body,
@@ -119,6 +133,17 @@ app.listen(PORT, () => {
     console.log(`Server listening on ${PORT}`);
 });
 
+// const key = "$expenseappbyishaq";
+
+// const claims = {
+//     username: "ishaqibrahim",
+//     userId: 1,
+// };
+
+// const header = {
+//     alg: "HS512",
+//     typ: "JWT",
+// };
 
 // Create DB
 

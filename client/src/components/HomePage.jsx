@@ -66,6 +66,7 @@ export default function HomePage({ setToken }) {
 
     const handleSubmit = async e => {
         e.preventDefault();
+        console.log(e);
         const token = await loginUser({
             email: userInfo.email,
             password: userInfo.password
