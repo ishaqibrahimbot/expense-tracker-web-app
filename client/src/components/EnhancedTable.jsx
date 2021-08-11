@@ -99,12 +99,10 @@ function EnhancedTableHead(props) {
 
 EnhancedTableHead.propTypes = {
     classes: PropTypes.object.isRequired,
-    numSelected: PropTypes.number.isRequired,
     onRequestSort: PropTypes.func.isRequired,
-    onSelectAllClick: PropTypes.func.isRequired,
     order: PropTypes.oneOf(['asc', 'desc']).isRequired,
     orderBy: PropTypes.string.isRequired,
-    rowCount: PropTypes.number.isRequired,
+    isMobile: PropTypes.bool.isRequired,
 };
 
 const useToolbarStyles = makeStyles(theme => ({
@@ -142,7 +140,7 @@ function EnhancedTableToolbar(props) {
         })}
         >
             {numSelected > 0 ? (
-                <Typography className={classes.title} color="inhert" variant="subtitle1" component="div">
+                <Typography className={classes.title} color="inherit" variant="subtitle1" component="div">
                     {numSelected} selected
                 </Typography>
             ) : (
@@ -347,7 +345,7 @@ export default function EnhancedTable(props) {
                                                         id={labelId}
                                                         className={isMobile ? classes.tableCellMobile : classes.tableCell}
                                                         scope="row" 
-                                                        padding="normal">
+                                                        padding="default">
                                                 {expenseItem.description}
                                             </TableCell>
                                             <TableCell className={isMobile ? classes.tableCellMobile : classes.tableCell}>{expenseItem.amount}</TableCell>

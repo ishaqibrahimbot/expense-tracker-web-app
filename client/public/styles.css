@@ -10,8 +10,8 @@ body {
 header {
     background-color: #f5ba13;
     /* margin: -10px -16px 10px -16px; */
-    margin: -1.5% -2% 1.5% -2%;
-    padding: 0.5rem 2rem;
+    margin: -0.5% -2% 1% -2%;
+    padding: 1.5rem 2rem;
     box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.4);
 }
 
@@ -145,7 +145,7 @@ footer p {
         margin: 50px auto;
         flex-direction: column;
         justify-content: space-around;
-        width: 200px;
+        width: 60%;
         background-color: whitesmoke;
         padding: 5%;
         padding-top: 5px;

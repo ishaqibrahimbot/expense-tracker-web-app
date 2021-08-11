@@ -41,14 +41,23 @@ const useStyles = makeStyles(theme => ({
 
 async function loginUser(credentials) {
     return axios.post("/login", qs.stringify({
-        email: credentials.email,
+        username: credentials.email,
         password: credentials.password,
     }))
     .then(response => response.data.token)
     .catch(error => console.log(error));
 }
 
-export default function HomePage({ setToken }) {    
+async function signupUser(credentials) {
+    return axios.post("/register", qs.stringify({
+        username: credentials.email,
+        password: credentials.password,
+    }))
+    .then(response => response.data.success)
+    .catch(error => console.log(error));
+}
+
+export default function HomePage({ setToken, triggerPostSignupLogin, displayMessage}) {
     const classes = useStyles();
     const [userInfo, setUserInfo] = useState({
         email: "",
@@ -64,28 +73,44 @@ export default function HomePage({ setToken }) {
         }));
     }
 
-    const handleSubmit = async e => {
+    const handleLogin = async e => {
         e.preventDefault();
-        console.log(e);
         const token = await loginUser({
             email: userInfo.email,
-            password: userInfo.password
+            password: userInfo.password,
         });
         setToken(token);
+    }
+
+    const handleSignup = async e => {
+        e.preventDefault();
+        const status = await signupUser({
+            email: userInfo.email,
+            password: userInfo.password,
+        });
+        if (status) {
+            triggerPostSignupLogin();
+        }
     }
 
     return (
         <div>
             <Header />
+            {displayMessage && (<div class="alert alert-warning alert-dismissible fade show" role="alert">
+                <strong>Signed up successfully!</strong> Please log in to continue to the app.
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                </div>)}
             <div>
-                <form className={classes.root} onSubmit={handleSubmit}>
+                <form className={classes.root}>
                     <h1 className={classes.heading}>Welcome!</h1>
                     <label className={classes.label}>Email:</label>
                     <TextField 
                         className={classes.textInput} 
                         value={userInfo.email} 
                         onChange={handleChange} 
-                        fullWidth="true" 
+                        fullWidth={true} 
                         name="email"
                         type="text" />
 
@@ -94,7 +119,7 @@ export default function HomePage({ setToken }) {
                         className={classes.textInput}
                         value={userInfo.password} 
                         onChange={handleChange} 
-                        fullWidth="true"
+                        fullWidth={true}
                         name="password"
                         type="password" />
                 
@@ -102,13 +127,15 @@ export default function HomePage({ setToken }) {
                         className={classes.submitButton}
                         type="submit"
                         variant="contained" 
-                        color="primary">Login
+                        color="primary"
+                        onClick={handleLogin}>Login
                     </Button>
                     <Button 
                         className={classes.submitButton}
                         type="submit"
                         variant="contained" 
-                        color="primary">Sign Up
+                        color="primary"
+                        onClick={handleSignup}>Sign Up
                     </Button>
                 </form>
             </div>

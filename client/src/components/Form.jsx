@@ -14,8 +14,8 @@ export default function Form(props) {
         date: new Date()
     });
 
-    function addMenuItems(menuItem) {
-        return (<MenuItem value={menuItem}>{menuItem}</MenuItem>);
+    function addMenuItems(menuItem, index) {
+        return (<MenuItem value={menuItem} key={index}>{menuItem}</MenuItem>);
     }
 
     function handleChange(event) {
@@ -62,7 +62,7 @@ export default function Form(props) {
                     className="text-input" 
                     value={expense.description} 
                     onChange={handleChange} 
-                    fullWidth="true" 
+                    fullWidth={true} 
                     size="small" 
                     name="description"/>
 
@@ -71,7 +71,7 @@ export default function Form(props) {
                     className="text-input" 
                     value={expense.amount} 
                     onChange={handleChange} 
-                    fullWidth="true" 
+                    fullWidth={true} 
                     size="small" 
                     name="amount" />
 

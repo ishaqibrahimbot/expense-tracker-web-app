@@ -47,8 +47,9 @@ function stringifyIds(idsToBeDeleted) {
 
 app.post("/register", (req, res) => {
     //Get the username and password details
-    const {username, password} = req.body;
-    
+    res.send({
+        success: true,
+    });
 });
 
 
@@ -70,7 +71,8 @@ app.post("/expenses", (req, res) => {
 
     let expense = {
         ...req.body,
-        amount: parseFloat(req.body.amount)
+        amount: parseFloat(req.body.amount),
+        userID: 1,
     };
 
     let sql = "INSERT INTO expenses SET ?";
