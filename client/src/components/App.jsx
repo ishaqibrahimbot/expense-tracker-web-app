@@ -12,14 +12,14 @@ export default function App() {
     const triggerLogin = () => {
         console.log("Signed up successfully!");
         setDisplayMessage(true);
-    };
+    }
 
     if(!token) {
-        return <HomePage 
-                    setToken={setToken} 
-                    triggerPostSignupLogin={triggerLogin}
+        return (<HomePage 
+                    setToken={setToken}
+                    triggerLogin={triggerLogin}
                     displayMessage={displayMessage}
-                    />;
+                    />);
     }
 
     return (

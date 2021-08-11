@@ -57,7 +57,10 @@ async function signupUser(credentials) {
     .catch(error => console.log(error));
 }
 
-export default function HomePage({ setToken, triggerPostSignupLogin, displayMessage}) {
+export default function HomePage(props) {
+    const setToken = props.setToken;
+    const triggerLogin = props.triggerLogin;
+    const displayMessage = props.displayMessage;
     const classes = useStyles();
     const [userInfo, setUserInfo] = useState({
         email: "",
@@ -89,16 +92,16 @@ export default function HomePage({ setToken, triggerPostSignupLogin, displayMess
             password: userInfo.password,
         });
         if (status) {
-            triggerPostSignupLogin();
+            triggerLogin();
         }
     }
 
     return (
         <div>
             <Header />
-            {displayMessage && (<div class="alert alert-warning alert-dismissible fade show" role="alert">
+            {displayMessage && (<div className="alert alert-warning alert-dismissible fade show" role="alert">
                 <strong>Signed up successfully!</strong> Please log in to continue to the app.
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <button type="button" className="close" data-dismiss="alert" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
                 </div>)}
