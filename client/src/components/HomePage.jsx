@@ -57,10 +57,7 @@ async function signupUser(credentials) {
     .catch(error => console.log(error));
 }
 
-export default function HomePage(props) {
-    const setToken = props.setToken;
-    const triggerLogin = props.triggerLogin;
-    const displayMessage = props.displayMessage;
+export default function HomePage({ setToken, triggerLogin, displayMessage }) {
     const classes = useStyles();
     const [userInfo, setUserInfo] = useState({
         email: "",

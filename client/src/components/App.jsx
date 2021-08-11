@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import HomePage from "./HomePage";
 import ExpenseApp from "./ExpenseApp";
-import {BrowserRouter, Route, Switch} from "react-router-dom";
 import useToken from "../useToken";
 
 
@@ -15,21 +14,8 @@ export default function App() {
     }
 
     if(!token) {
-        return (<HomePage 
-                    setToken={setToken}
-                    triggerLogin={triggerLogin}
-                    displayMessage={displayMessage}
-                    />);
+        return <HomePage setToken={setToken} triggerLogin={triggerLogin} displayMessage={displayMessage}/>;
     }
 
-    return (
-        <div>
-            <BrowserRouter>
-                <Switch>
-                    <Route exact path="/" component={HomePage} />
-                    <Route path="/dashboard" component={ExpenseApp} />
-                </Switch>
-            </BrowserRouter>
-        </div>
-    );
+    return <ExpenseApp />;
 }
