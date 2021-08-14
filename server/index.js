@@ -46,6 +46,7 @@ app.post("/login", (req, res) => {
     let sql = "SELECT * FROM users WHERE username=?";
     db.query(sql, [username], (err, queryResults) => {
         if (!err) {
+            console.log(queryResults);
             if (queryResults.length != 0) {
                 bcrypt.compare(password, queryResults[0].password, (err, passwordCheck) => {
                     if (!err) {
@@ -86,17 +87,11 @@ app.post("/login", (req, res) => {
                     userExists: false,                    
                 });
             }
+        } else {
+            throw err;
         }
     })
 
-    // res.send({token: "Hello"});
-    //Check if a user exists with this name. If yes, check if password is same, or else
-    //say that no user exists with this username please sign up.
-    //If password is correct, generateJWT and send it with a success message, or else 
-    //say that the password is not correct.
-    // res.send({
-    //     token: 'test123'
-    // });
 });
 
 

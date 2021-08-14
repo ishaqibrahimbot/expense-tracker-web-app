@@ -13,7 +13,7 @@ const useStyles = makeStyles(theme => ({
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-around',
-        width: '30%',
+        width: '280px',
         backgroundColor: 'whitesmoke',
         margin: '5rem auto',
         padding: '1.8%',
@@ -23,18 +23,22 @@ const useStyles = makeStyles(theme => ({
     heading: {
         fontSize: '1.5rem',
         textAlign: 'center',
+        margin: '1rem 0.5rem'
     },
     label: {
         textAlign: 'left',
         fontSize: '1rem',
         display: 'block',
         color: '#6C7A89',
+        margin: '0.5rem auto'
     },
     textInput: {
-        margin: '0.25rem 0 1.5rem 0',
+        margin: '0 auto',
+        marginBottom: '1rem',
+        width: '90%'
     },
     submitButton: {
-        width: '30%',
+        width: '40%',
         margin: '0.8rem auto',        
     }
 }))
@@ -45,7 +49,9 @@ async function loginUser(credentials) {
         password: credentials.password,
     }))
     .then(response => response.data)
-    .catch(error => console.log(error));
+    .catch(error => {
+        throw error;
+    });
 }
 
 async function signupUser(credentials) {
