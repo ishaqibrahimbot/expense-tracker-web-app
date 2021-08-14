@@ -43,7 +43,7 @@ app.post("/register", (req, res) => {
 app.post("/login", (req, res) => {
     const { username, password } = req.body;
 
-    let sql = "SELECT * FROM users WHERE username=?";
+    let sql = `SELECT * FROM users WHERE username=?`;
     db.query(sql, [username], (err, queryResults) => {
         if (!err) {
             console.log(queryResults);
@@ -53,7 +53,7 @@ app.post("/login", (req, res) => {
                         if (passwordCheck) {
                             console.log("Password is correct!");
 
-                            const key = process.env.SECRET_KEY;
+                            const key = "oneKeyToRuleThemAll";
                             const claims = {
                                 username: username,
                                 userId: queryResults[0].userID,
