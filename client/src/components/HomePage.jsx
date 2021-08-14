@@ -4,6 +4,7 @@ import Header from "./Header";
 import Footer from "./Footer";
 import {Button, TextField} from '@material-ui/core';
 import PropTypes from "prop-types";
+import Alert from "./Alert";
 
 const qs = require('qs');
 const axios = require('axios');
@@ -63,9 +64,8 @@ async function signupUser(credentials) {
     .catch(error => console.log(error));
 }
 
-export default function HomePage({ setToken }) {
+export default function HomePage({ setToken, failedJWTValidation, setFailedJWTValidation, displayMessage, setDisplayMessage }) {
     const classes = useStyles();
-    const [displayMessage, setDisplayMessage] = useState(false);
     const [alertMessage, setAlertMessage] = useState({
         strong: "",
         pTag: "",
@@ -78,6 +78,11 @@ export default function HomePage({ setToken }) {
     const signupSuccessMessage = {
         strong: "Signed up successfully!",
         pTag: " Please log in to continue to the app.",
+    };
+
+    const failedJWTValidationMessage = {
+        strong: "You are not authorized to use the app.",
+        pTag: " Please log in to continue.",
     };
 
     const signupFailureMessage = {
@@ -132,7 +137,6 @@ export default function HomePage({ setToken }) {
             setDisplayMessage(true);
         } else {
             const token = responseData.token;
-            console.log(token);
             setToken(token);
         }
     }
@@ -153,12 +157,18 @@ export default function HomePage({ setToken }) {
     return (
         <div>
             <Header />
-            {displayMessage && (<div className="alert alert-warning alert-dismissible fade show" role="alert">
-                <strong>{alertMessage.strong}</strong> {alertMessage.pTag}
-                <button type="button" className="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-                </div>)}
+            {failedJWTValidation ? 
+                (displayMessage && <Alert 
+                                        alertMessage={failedJWTValidationMessage} 
+                                        setDisplayMessage={setDisplayMessage} 
+                                        setFailedJWTValidation={setFailedJWTValidation}
+                                        />)
+                :
+                (displayMessage &&  <Alert 
+                                        alertMessage={alertMessage} 
+                                        setDisplayMessage={setDisplayMessage}
+                                        setFailedJWTValidation={setFailedJWTValidation}
+                                        />)}
             <div>
                 <form className={classes.root}>
                     <h1 className={classes.heading}>Welcome!</h1>

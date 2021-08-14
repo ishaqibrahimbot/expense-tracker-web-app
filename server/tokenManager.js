@@ -21,8 +21,9 @@ const DecodeJWT = sJWT => {
     return pClaim;
 };
 
-const ValidateJWT = (header, token, key) => {
-    return JSRSASign.jws.JWS.verifyJWT(token, key, header);
+const ValidateJWT = (token, key) => {
+    const algorithm = "HS512";
+    return JSRSASign.jws.JWS.verifyJWT(token, key, {alg: [algorithm]});
 };
 
 module.exports = {

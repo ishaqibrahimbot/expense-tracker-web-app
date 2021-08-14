@@ -7,21 +7,27 @@ import EnhancedTable from "./EnhancedTable";
 const axios = require("axios");
 const qs = require("qs");
 
-export default function ExpenseApp({ token }) {
+export default function ExpenseApp({ token, setToken, setFailedJWTValidation, setDisplayMessage }) {
     const [isLoading, setLoading] = useState(true);
     const [expenses, setExpenses] = useState([]);
 
-
+    const authStr = "Bearer ".concat(token);
 
     function fetchData() {
-        axios.get('/expenses')
+        axios.get('/expenses', { headers: { Authorization: authStr } })
         .then(response => {
-            console.log(response.data);
-            setExpenses(response.data);
-            setLoading(false);
+            if (response.data !== false) {
+                console.log(response.data);
+                setExpenses(response.data);
+                setLoading(false);
+            } else {
+                setToken(false);
+                setFailedJWTValidation(true);
+                setDisplayMessage(true);
+            }
+            
         })
         .catch(error => console.log(error))
-        .then(() => console.log("Successfully retrieved all expenses!"));
     }
 
     useEffect(() => {
@@ -47,8 +53,16 @@ export default function ExpenseApp({ token }) {
             amount: parseFloat(newExpense.amount),
             category: newExpense.category,
             date: newExpense.date,
-        }))
-        .then(response => console.log(response))
+        }), { headers: { 'Authorization': authStr } })
+        .then(response => {
+            if (response.data !== false) {
+                console.log(response.data);
+            } else {
+                setToken(false);
+                setFailedJWTValidation(true);
+                setDisplayMessage(true);
+            }
+        })
         .catch(error => console.log(error))
         .then(() => fetchData());
     }
@@ -63,17 +77,6 @@ export default function ExpenseApp({ token }) {
         .then(response => console.log(response))
         .catch(error => console.log(error))
         .then(() => fetchData());
-
-        // let idString = "";
-        // selectedExpenses.forEach(expenseItem => {
-        //     idString = idString + expenseItem.id.toString() + "+";
-        // });
-        // idString = idString.slice(0, -1);
-
-        // axios.delete(`/expenses/${idString}`)
-        // .then(response => console.log(response))
-        // .catch(error => console.log(error))
-        // .then(() => fetchData());
     }
 
     return (

@@ -22,6 +22,9 @@ const db = connectToMySQLDatabase();
 //Temporary setting
 const userID = 1;
 
+//Define key for JWT
+const key = "oneKeyToRuleThemAll";
+
 //////////////Handle Sign Ups and Logins///////////////
 
 app.post("/register", (req, res) => {
@@ -53,7 +56,6 @@ app.post("/login", (req, res) => {
                         if (passwordCheck) {
                             console.log("Password is correct!");
 
-                            const key = "oneKeyToRuleThemAll";
                             const claims = {
                                 username: username,
                                 userId: queryResults[0].userID,
@@ -99,21 +101,37 @@ app.post("/login", (req, res) => {
 // Add expense entry
 
 app.post("/expenses", (req, res) => {
+    const authStr = req.headers.authorization;
+    const token = authStr.slice(7);
 
-    //Run the below code with a modified query that selects details for userID
-    let expense = {
-        ...req.body,
-        amount: parseFloat(req.body.amount),
-        userID: userID,
-    };
-
-    insertExpenseIntoDB(res, db, expense);
+    if (ValidateJWT(token, key)) {
+        const userDetails = DecodeJWT(token);
+        const userID = userDetails.userId;
+        let expense = {
+            ...req.body,
+            amount: parseFloat(req.body.amount),
+            userID: userID,
+        };
+        insertExpenseIntoDB(res, db, expense);
+    } else {
+        res.send(false);
+    }
 });
 
 // Get all expenses
 
 app.get("/expenses", (req, res) => {
-    retrieveAllExpenses(res, db, userID);
+    const authStr = req.headers.authorization;
+    const token = authStr.slice(7);
+
+    if (ValidateJWT(token, key)) {
+        const userDetails = DecodeJWT(token);
+        const userID = userDetails.userId;
+        retrieveAllExpenses(res, db, userID);
+    } else {
+        res.send(false);
+    }
+    
 });
 
 // Delete Expense
