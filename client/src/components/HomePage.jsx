@@ -44,7 +44,7 @@ async function loginUser(credentials) {
         username: credentials.email,
         password: credentials.password,
     }))
-    .then(response => response.data.token)
+    .then(response => response.data)
     .catch(error => console.log(error));
 }
 
@@ -57,12 +57,38 @@ async function signupUser(credentials) {
     .catch(error => console.log(error));
 }
 
-export default function HomePage({ setToken, triggerLogin, displayMessage }) {
+export default function HomePage({ setToken }) {
     const classes = useStyles();
+    const [displayMessage, setDisplayMessage] = useState(false);
+    const [alertMessage, setAlertMessage] = useState({
+        strong: "",
+        pTag: "",
+    });
     const [userInfo, setUserInfo] = useState({
         email: "",
         password: "",
     });
+
+    const signupSuccessMessage = {
+        strong: "Signed up successfully!",
+        pTag: " Please log in to continue to the app.",
+    };
+
+    const signupFailureMessage = {
+        strong: "Oops! There was an error during sign up.",
+        pTag: " Please try again after refreshing the webpage.",
+    };
+
+    const noMatchingUserMessage = {
+        strong: "Sorry! This user does not exist in our database.",
+        pTag: " Please sign up first to access this application."
+    };
+
+    const incorrectPasswordMessage = {
+        strong: "Incorrect or empty password!",
+        pTag: " Please try again.",
+    };
+    
 
     function handleChange(event) {
         const {name, value} = event.target;
@@ -73,13 +99,36 @@ export default function HomePage({ setToken, triggerLogin, displayMessage }) {
         }));
     }
 
+    const triggerLogin = () => {
+        console.log("Signed up successfully!");
+        setAlertMessage(signupSuccessMessage);
+        setDisplayMessage(true);
+    }
+
+    const triggerSignUpRetry = () => {
+        console.log("Error during sign up. Try again!");
+        setAlertMessage(signupFailureMessage);
+        setDisplayMessage(true);
+    }
+
     const handleLogin = async e => {
         e.preventDefault();
-        const token = await loginUser({
+        const responseData = await loginUser({
             email: userInfo.email,
             password: userInfo.password,
         });
-        setToken(token);
+
+        if (!responseData.userExists) {
+            setAlertMessage(noMatchingUserMessage);
+            setDisplayMessage(true);
+        } else if (!responseData.passwordCorrect) {
+            setAlertMessage(incorrectPasswordMessage);
+            setDisplayMessage(true);
+        } else {
+            const token = responseData.token;
+            console.log(token);
+            setToken(token);
+        }
     }
 
     const handleSignup = async e => {
@@ -90,6 +139,8 @@ export default function HomePage({ setToken, triggerLogin, displayMessage }) {
         });
         if (status) {
             triggerLogin();
+        } else {
+            triggerSignUpRetry();
         }
     }
 
@@ -97,7 +148,7 @@ export default function HomePage({ setToken, triggerLogin, displayMessage }) {
         <div>
             <Header />
             {displayMessage && (<div className="alert alert-warning alert-dismissible fade show" role="alert">
-                <strong>Signed up successfully!</strong> Please log in to continue to the app.
+                <strong>{alertMessage.strong}</strong> {alertMessage.pTag}
                 <button type="button" className="close" data-dismiss="alert" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>

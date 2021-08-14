@@ -1,27 +1,12 @@
+require('dotenv').config();
 const express = require("express");
-const mysql = require("mysql");
 const path = require('path');
 const cors = require("cors");
+const bcrypt = require("bcrypt");
 const {GenerateJWT, ValidateJWT, DecodeJWT} = require("./tokenManager.js");
+const { stringifyIds, connectToMySQLDatabase, insertExpenseIntoDB, 
+    retrieveAllExpenses, deleteExpenses, addUser } = require("./databaseService.js");
 
-// Create MySQL connection
-
-const db = mysql.createConnection(process.env.JAWSDB_URL ? process.env.JAWSDB_URL : {
-    host: "localhost",
-    user: "root",
-    password: "",
-    database: "expensedb"
-});
-
-// Connect to DB
-
-db.connect((err) => {
-    if (err) {
-        console.log(err);
-    } else {
-        console.log("My SQL connected!");
-    }
-});
 
 //////////////////////////////
 
@@ -31,34 +16,87 @@ const app = express();
 app.use(express.urlencoded({extended: true}));
 app.use(cors());
 
-/// Take array of ids and return a string fit for SQL query
+//Connect to database
+const db = connectToMySQLDatabase();
 
-function stringifyIds(idsToBeDeleted) {
-    let sqlString = "(";
-    idsToBeDeleted.forEach(id => {
-        sqlString = sqlString + id + ",";
-    });
-    sqlString = sqlString.slice(0, -1) + ")";
-    return sqlString;
-}
-
+//Temporary setting
+const userID = 1;
 
 //////////////Handle Sign Ups and Logins///////////////
 
 app.post("/register", (req, res) => {
     //Get the username and password details
-    res.send({
-        success: true,
+    const { username, password } = req.body;
+    const saltRounds = 10;
+    bcrypt.genSalt(saltRounds, (err, salt) => {
+        if (!err) {
+            bcrypt.hash(password, salt, (err, hash) => {
+                if(!err) {
+                    addUser(res, db, username, hash);
+                }
+            });
+        }
     });
 });
 
 
 app.post("/login", (req, res) => {
-    
-    //If so, make claims with username and userID, generate JWT, and send it back
-    res.send({
-        token: 'test123'
-    });
+    const { username, password } = req.body;
+
+    let sql = "SELECT * FROM users WHERE username=?";
+    db.query(sql, [username], (err, queryResults) => {
+        if (!err) {
+            if (queryResults.length != 0) {
+                bcrypt.compare(password, queryResults[0].password, (err, passwordCheck) => {
+                    if (!err) {
+                        if (passwordCheck) {
+                            console.log("Password is correct!");
+
+                            const key = process.env.SECRET_KEY;
+                            const claims = {
+                                username: username,
+                                userId: queryResults[0].userID,
+                            };
+                            const header = {
+                                alg: "HS512",
+                                typ: "JWT",
+                            };
+
+                            const sJWT = GenerateJWT(header, claims, key);
+
+                            res.send({
+                                userExists: true,
+                                passwordCorrect: true,
+                                token: sJWT,
+                            });
+                            
+                        } else {
+                            console.log("Password incorrect :(");
+                            res.send({
+                                userExists: true,
+                                passwordCorrect: false,
+                            });
+                        }
+                    } else {
+                        throw err;
+                    }
+                });
+            } else {
+                res.send({
+                    userExists: false,                    
+                });
+            }
+        }
+    })
+
+    // res.send({token: "Hello"});
+    //Check if a user exists with this name. If yes, check if password is same, or else
+    //say that no user exists with this username please sign up.
+    //If password is correct, generateJWT and send it with a success message, or else 
+    //say that the password is not correct.
+    // res.send({
+    //     token: 'test123'
+    // });
 });
 
 
@@ -68,57 +106,30 @@ app.post("/login", (req, res) => {
 app.post("/expenses", (req, res) => {
 
     //Run the below code with a modified query that selects details for userID
-
     let expense = {
         ...req.body,
         amount: parseFloat(req.body.amount),
-        userID: 1,
+        userID: userID,
     };
 
-    let sql = "INSERT INTO expenses SET ?";
-    db.query(sql, expense, (err, result) => {
-        if (err) {
-            console.log(err);
-            res.send(err);
-        } else {
-            console.log(`Successfully added:\n${expense}`);
-            res.send("Successfully added a new entry...");
-        }
-    });
+    insertExpenseIntoDB(res, db, expense);
 });
 
 // Get all expenses
 
 app.get("/expenses", (req, res) => {
-    let sql = "SELECT * FROM expenses";
-    db.query(sql, (err, result) => {
-        if (err) {
-            console.log(err);
-        } else {
-            console.log(result);
-            res.send(JSON.stringify(result));
-        }
-    });
+    retrieveAllExpenses(res, db, userID);
 });
 
 // Delete Expense
 
-app.delete("/expenses/:idString", (req, res) => {
-    const idString = req.params.idString;
-    const idsToBeDeleted = idString.split('+');
-    const sqlIdString = stringifyIds(idsToBeDeleted);
+app.post("/deleteexpenses", (req, res) => {
 
-    let sql = `DELETE FROM expenses WHERE id IN ${sqlIdString}`;
- 
-    db.query(sql, (err, result) => {
-        if (err) {
-            throw err;
-        } else {
-            console.log(result);
-            res.send("Deleted the post...");
-        }
-    });
+    const idList = req.body.idList;
+    const sqlIdString = stringifyIds(idList);
+    deleteExpenses(res, db, sqlIdString);
 });
+
 
 if (process.env.NODE_ENV === 'production') {
     /// Have node serve the files for our built React app
@@ -135,17 +146,7 @@ app.listen(PORT, () => {
     console.log(`Server listening on ${PORT}`);
 });
 
-// const key = "$expenseappbyishaq";
 
-// const claims = {
-//     username: "ishaqibrahim",
-//     userId: 1,
-// };
-
-// const header = {
-//     alg: "HS512",
-//     typ: "JWT",
-// };
 
 // Create DB
 

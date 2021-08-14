@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import HomePage from "./HomePage";
 import ExpenseApp from "./ExpenseApp";
 import useToken from "../useToken";
@@ -6,16 +6,11 @@ import useToken from "../useToken";
 
 export default function App() {
     const {setToken, token} = useToken();
-    const [displayMessage, setDisplayMessage] = useState(false);
-
-    const triggerLogin = () => {
-        console.log("Signed up successfully!");
-        setDisplayMessage(true);
-    }
+    
 
     if(!token) {
-        return <HomePage setToken={setToken} triggerLogin={triggerLogin} displayMessage={displayMessage}/>;
+        return <HomePage setToken={setToken}/>;
     }
 
-    return <ExpenseApp />;
+    return <ExpenseApp token={token}/>;
 }

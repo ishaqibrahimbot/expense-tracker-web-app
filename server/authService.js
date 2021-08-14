@@ -10,6 +10,7 @@
 //Insert data into SQL users table
 //Send back a status saying whether sign up was successful or not
 
+
 //Function 3: Login
 //Get the username and password details
 //Check if a similar username exists in database

@@ -7,7 +7,7 @@ import EnhancedTable from "./EnhancedTable";
 const axios = require("axios");
 const qs = require("qs");
 
-export default function ExpenseApp() {
+export default function ExpenseApp({ token }) {
     const [isLoading, setLoading] = useState(true);
     const [expenses, setExpenses] = useState([]);
 
@@ -55,16 +55,25 @@ export default function ExpenseApp() {
 
     function deleteExpense(selectedExpenses) {
 
-        let idString = "";
-        selectedExpenses.forEach(expenseItem => {
-            idString = idString + expenseItem.id.toString() + "+";
-        });
-        idString = idString.slice(0, -1);
+        const idList = selectedExpenses.map(expenseItem => expenseItem.id);
 
-        axios.delete(`/expenses/${idString}`)
+        axios.post("/deleteexpenses", qs.stringify({
+            idList: idList,
+        }))
         .then(response => console.log(response))
         .catch(error => console.log(error))
         .then(() => fetchData());
+
+        // let idString = "";
+        // selectedExpenses.forEach(expenseItem => {
+        //     idString = idString + expenseItem.id.toString() + "+";
+        // });
+        // idString = idString.slice(0, -1);
+
+        // axios.delete(`/expenses/${idString}`)
+        // .then(response => console.log(response))
+        // .catch(error => console.log(error))
+        // .then(() => fetchData());
     }
 
     return (
