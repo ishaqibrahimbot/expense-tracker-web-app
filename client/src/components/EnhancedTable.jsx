@@ -284,7 +284,7 @@ export default function EnhancedTable(props) {
     };
 
     const handleDelete = () => {
-        const selectedExpenses = expenseList.filter(expenseItem => (selected.includes(expenseItem.description)));
+        const selectedExpenses = expenseList.filter(expenseItem => (selected.includes(expenseItem.id)));
         onDelete(selectedExpenses);
         setSelected([]);
     };
