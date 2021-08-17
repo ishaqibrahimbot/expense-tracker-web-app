@@ -59,3 +59,19 @@ styles created in the React app and do a trial-and-error to fix them.
 
 As for using passport, I think it would be much better to first just clone and go through the example they've provided using a MySQL database before implementing it
 in my app. So yeah I'll do that as the next step.
+
+<-- 15th August -->
+
+Updates:
+
+1) Have successfully implemented a fully functional sign up and login system, including the staying-logged-in feature. However, contrary to my earlier description, I ended
+up using JSON Web Tokens (JWTs) and no passport whatsoever. Neither of the react tutorials I followed used passport, and my functionality is now complete without it.
+
+I still need to work on the following things now before I can share this with anyone else:
+
+1) Implement a log out system as well. This will simply delete the token from localStorage, taking the user back to the home page for login.
+2) Fix the table so that everything works based on unique expenseIds instead of the descriptions which can be same for more than one entry. This is causing an unsavory bug.
+3) Fix the bug where whenever I change the page in the table, something weird happens and recently added entries get displayed at the top. Will need to see why this is happening.
+4) Research on how to reduce the size of the React app.
+
+Once I'm done with the above 3, I can then move on to asking people for advice on how to improve upon this and other problems I may be running into unknowingly.
