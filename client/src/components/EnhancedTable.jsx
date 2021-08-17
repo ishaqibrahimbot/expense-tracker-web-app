@@ -241,7 +241,7 @@ export default function EnhancedTable(props) {
 
     const handleSelectAllClick = (event) => {
         if(event.target.checked) {
-            const newSelecteds = expenseList.map(expenseItem => expenseItem.description);
+            const newSelecteds = expenseList.map(expenseItem => expenseItem.id);
             setSelected(newSelecteds);
             return;
         }
@@ -264,6 +264,8 @@ export default function EnhancedTable(props) {
                 selected.slice(selectedIndex + 1)
             );
         }
+
+        console.log(newSelected);
 
         setSelected(newSelected);
     };
@@ -320,17 +322,17 @@ export default function EnhancedTable(props) {
                             {stableSort(expenseList, getComparator(order, orderBy))
                                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                 .map((expenseItem, index) => {
-                                    const isItemSelected = isSelected(expenseItem.description);
+                                    const isItemSelected = isSelected(expenseItem.id);
                                     const labelId = `enhanced-table-checkbox-${index}`;
 
                                     return (
                                         <TableRow 
                                             hover
-                                            onClick={(event) => handleClick(event, expenseItem.description)}
+                                            onClick={(event) => handleClick(event, expenseItem.id)}
                                             role="checkbox"
                                             aria-checked={isItemSelected}
                                             tabIndex={-1}
-                                            key={expenseItem.description}
+                                            key={expenseItem.id}
                                             selected={isItemSelected}
                                         >
                                             <MediaQuery minWidth={520}>
