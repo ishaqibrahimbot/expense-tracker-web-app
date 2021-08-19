@@ -3,9 +3,7 @@ import {Button, TextField, Select, MenuItem} from '@material-ui/core';
 import DatePicker from "react-date-picker";
 
 
-export default function Form(props) {
-
-    const options = ["Groceries", "Zainab", "Fuel", "Subscriptions", "Food", "Miscellaneous"];
+export default function Form({ onAdd, categories}) {
 
     const [expense, setExpense] = useState({
         description: "",
@@ -15,7 +13,7 @@ export default function Form(props) {
     });
 
     function addMenuItems(menuItem, index) {
-        return (<MenuItem value={menuItem} key={index}>{menuItem}</MenuItem>);
+        return (<MenuItem value={menuItem.categoryName} key={index}>{menuItem.categoryName}</MenuItem>);
     }
 
     function handleChange(event) {
@@ -41,7 +39,7 @@ export default function Form(props) {
     }
 
     function submitExpense(event) {
-        props.onAdd(expense);
+        onAdd(expense);
         setExpense(prevExpense => ({
                 description: "",
                 amount: "",
@@ -81,7 +79,7 @@ export default function Form(props) {
                     name="category" 
                     value={expense.category} 
                     onChange={handleChange}>
-                    {options.map(addMenuItems)}
+                    {categories.map(addMenuItems)}
                 </Select>
 
                 <label>Date</label>

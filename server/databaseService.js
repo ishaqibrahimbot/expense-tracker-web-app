@@ -25,14 +25,37 @@ function connectToMySQLDatabase() {
     return db;
 }
 
+function addBasicCategories(db, userID) {
+    let sql = `INSERT INTO categories (categoryName, userID) VALUES ?`;
+
+    const basicCategories = [
+        ["Groceries", userID],
+        ["Food", userID],
+        ["Medical", userID],
+        ["Fuel", userID],
+        ["Subscriptions", userID],
+        ["Miscellaneous", userID],
+    ];
+
+    db.query(sql, [basicCategories], (err, result) => {
+        if (err) {
+            console.log(err);
+        } else {
+            console.log("Successfully added basic categories for new user!");
+        }
+    });
+}
+
 function addUser(res, db, username, hash) {
     let sql = `INSERT INTO users (username, password) VALUES (?, ?)`;
-    return db.query(sql, [username, hash], (err, result) => {
+    db.query(sql, [username, hash], (err, result) => {
         if (err) {
             console.log(err);
             res.send({success: false});
         } else {
             console.log(result);
+            const userID = result.insertId;
+            addBasicCategories(db, userID);
             res.send({success: true});
         }
     })
@@ -76,6 +99,44 @@ function deleteExpenses(res, db, sqlIdString) {
     });
 }
 
+function retrieveAllCategories(res, db, userID) {
+    let sql = `SELECT * FROM categories WHERE userID = ?`;
+    db.query(sql, [userID], (err, result) => {
+        if (err) {
+            console.log(err);
+        } else {
+            console.log(result);
+            res.send(JSON.stringify(result));
+        }
+    });
+}
+
+function addCategoryToDB(res, db, {categoryName, userID}) {
+    let sql = `INSERT INTO categories (categoryName, userID) VALUES (?, ?)`;
+    db.query(sql, [categoryName, userID], (err, result) => {
+        if (err) {
+            console.log(err);
+            res.send(err);
+        } else {
+            console.log(result);
+            res.send("Successfully added new category");
+        }
+    });
+}
+
+function deleteCategory(res, db, categoryID) {
+    let sql = `DELETE FROM categories WHERE categoryID = ?`;
+    db.query(sql, [categoryID], (err, result) => {
+        if (err) {
+            console.log(err);
+            res.send(err);
+        } else {
+            console.log(result);
+            res.send("Successfully deleted the category entry.")
+        }
+    });
+}
+
 function stringifyIds(idsToBeDeleted) {
     let sqlString = "(";
     idsToBeDeleted.forEach(id => {
@@ -92,4 +153,7 @@ module.exports = {
     retrieveAllExpenses,
     deleteExpenses,
     addUser,
+    retrieveAllCategories,
+    addCategoryToDB,
+    deleteCategory,
 }

@@ -64,7 +64,7 @@ async function signupUser(credentials) {
     .catch(error => console.log(error));
 }
 
-export default function HomePage({ setToken, failedJWTValidation, setFailedJWTValidation, displayMessage, setDisplayMessage }) {
+export default function HomePage({ setToken, failedJWTValidation, setFailedJWTValidation, displayMessage, setDisplayMessage, setLoggedOut }) {
     const classes = useStyles();
     const [alertMessage, setAlertMessage] = useState({
         strong: "",
@@ -156,7 +156,7 @@ export default function HomePage({ setToken, failedJWTValidation, setFailedJWTVa
 
     return (
         <div>
-            <Header />
+            <Header showLinks={false}/>
             {failedJWTValidation ? 
                 (displayMessage && <Alert 
                                         alertMessage={failedJWTValidationMessage} 

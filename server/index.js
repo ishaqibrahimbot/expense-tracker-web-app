@@ -5,7 +5,8 @@ const cors = require("cors");
 const bcrypt = require("bcrypt");
 const {GenerateJWT, ValidateJWT, DecodeJWT} = require("./tokenManager.js");
 const { stringifyIds, connectToMySQLDatabase, insertExpenseIntoDB, 
-    retrieveAllExpenses, deleteExpenses, addUser } = require("./databaseService.js");
+    retrieveAllExpenses, deleteExpenses, addUser, retrieveAllCategories,
+    addCategoryToDB, deleteCategory } = require("./databaseService.js");
 
 
 //////////////////////////////
@@ -141,6 +142,50 @@ app.post("/deleteexpenses", (req, res) => {
     const idList = req.body.idList;
     const sqlIdString = stringifyIds(idList);
     deleteExpenses(res, db, sqlIdString);
+});
+
+// Get all categories
+
+app.get("/categories", (req, res) => {
+    const authStr = req.headers.authorization;
+    const token = authStr.slice(7);
+
+    if (ValidateJWT(token, key)) {
+        const userDetails = DecodeJWT(token);
+        const userID = userDetails.userId;
+        retrieveAllCategories(res, db, userID);
+    } else {
+        res.send(false);
+    }
+
+});
+
+//Add a new category
+app.post("/categories", (req, res) => {
+    const authStr = req.headers.authorization;
+    const token = authStr.slice(7);
+
+    if (ValidateJWT(token, key)) {
+        const userDetails = DecodeJWT(token);
+        const categoryName = req.body.categoryName;
+        const userID = userDetails.userId;
+        addCategoryToDB(res, db, {categoryName, userID});
+    } else {
+        res.send(false);
+    }
+});
+
+//Delete a category
+app.delete("/categories/:categoryID", (req, res) => {
+    const categoryID = req.params.categoryID;
+    const authStr = req.headers.authorization;
+    const token = authStr.slice(7);
+
+    if (ValidateJWT(token, key)) {
+        deleteCategory(res, db, categoryID);
+    } else {
+        res.send(false);
+    }
 });
 
 
