@@ -14,7 +14,6 @@ export default function ExpenseApp({ token, setToken, setFailedJWTValidation, se
     const [categoriesOpen, setCategoriesOpen] = useState(false);
     const [categories, setCategories] = useState([]);
 
-
     const authStr = "Bearer ".concat(token);
 
     function fetchData() {
