@@ -18,9 +18,13 @@ const Stats = props => {
     const { expenses, categories } = props;
 
     const calculateMonthToDate = () => {
-        return getFilteredExpenses(expenses)
-            .map(expense => expense.amount)
-            .reduce((prev, curr) => (prev + curr));
+        if (expenses.length > 0){
+            return getFilteredExpenses(expenses)
+                .map(expense => expense.amount)
+                .reduce((prev, curr) => (prev + curr));
+        } else {
+            return 0;
+        }
     };
     
 
