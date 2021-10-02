@@ -110,28 +110,22 @@ function retrieveAllCategories(res, db, userID) {
     });
 }
 
-function makeUpdateQuery(newBudgets) {
-    let baseQuery = "";
+function updateBudgets(res, newBudgets, db) {
 
     newBudgets.forEach(budgetItem => {
         let budget = budgetItem.budget === "" ? 0 : budgetItem.budget; 
-        baseQuery += `UPDATE categories SET budget = ${budget} WHERE categoryID = ${budgetItem.id};`;
+        let sql = `UPDATE categories SET budget = ${budget} WHERE categoryID = ${budgetItem.id}`;
+        db.query(sql, (err, result) => {
+            if (err) {
+                console.log(err);
+                res.status(500).send(`There was an error updating budget for ${budgetItem.id}`);
+            } else {
+                console.log(result);
+            }
+        });
     });
 
-    return baseQuery;
-}
-
-function updateBudgets(res, newBudgets, db) {
-    let sql = makeUpdateQuery(newBudgets);
-    db.query(sql, (err, result) => {
-        if (err) {
-            console.log(err);
-            res.status(500).send("There was an internal database error");
-        } else {
-            console.log(result);
-            res.send("Added new budgets!");
-        }
-    })
+    res.send("Successfully updated all budgets!");
 };
 
 function addCategoryToDB(res, db, {categoryName, userID}) {
