@@ -4,6 +4,8 @@ import Footer from "./Footer";
 import Form from "./Form";
 import EnhancedTable from "./EnhancedTable";
 import CategoriesDialog from "./CategoriesDialog";
+import BudgetDialog from "./BudgetDialog";
+import Stats from "./Stats";
 
 const axios = require("axios");
 const qs = require("qs");
@@ -13,6 +15,7 @@ export default function ExpenseApp({ token, setToken, setFailedJWTValidation, se
     const [expenses, setExpenses] = useState([]);
     const [categoriesOpen, setCategoriesOpen] = useState(false);
     const [categories, setCategories] = useState([]);
+    const [budgetDialogOpen, setBudgetDialogOpen] = useState(false);
 
     const authStr = "Bearer ".concat(token);
 
@@ -55,7 +58,12 @@ export default function ExpenseApp({ token, setToken, setFailedJWTValidation, se
 
     const manageCategoriesHandler = () => {
         setCategoriesOpen(true);
-    }
+    };
+
+    const manageBudgetHandler = () => {
+        console.log("OPENING BUDGET DIALOG");
+        setBudgetDialogOpen(true);
+    };
 
     useEffect(() => {
         fetchData();
@@ -68,10 +76,15 @@ export default function ExpenseApp({ token, setToken, setFailedJWTValidation, se
             <Header
                 showLinks={true}
                 logOutHandler={logOutHandler}
-                manageCategoriesHandler={manageCategoriesHandler} 
+                manageCategoriesHandler={manageCategoriesHandler}
+                manageBudgetHandler={manageBudgetHandler}
             />
             <CategoriesDialog open={categoriesOpen} setOpen={setCategoriesOpen} categories={categories}
                 setCategories={setCategories} addNewCategory={addNewCategory} deleteCategory={deleteCategory}
+            />
+            <BudgetDialog
+                open={budgetDialogOpen} setOpen={setBudgetDialogOpen} categories={categories}
+                setCategories={setCategories} updateBudgets={updateBudgets}
             />
             <div className="form-table-container">
                 <Form 
@@ -84,6 +97,7 @@ export default function ExpenseApp({ token, setToken, setFailedJWTValidation, se
                     />
                 <EnhancedTable expenseList={[]} />
             </div>
+            <Stats expenses={expenses} categories={categories}/>
             <Footer />       
         </div>)
     }
@@ -104,7 +118,25 @@ export default function ExpenseApp({ token, setToken, setFailedJWTValidation, se
             }
         })
         .catch(error => console.log(error));
-    }
+    };
+
+    function updateBudgets(newBudgets) {
+        console.log(newBudgets);
+        axios.put("/categories/budget", qs.stringify({
+            newBudgets: newBudgets,
+        }), { headers: { 'Authorization': authStr }})
+        .then(response => {
+            if (response.data !== false) {
+                console.log(response.data);
+                fetchCategories();
+            } else {
+                setToken(false);
+                setFailedJWTValidation(true);
+                setDisplayMessage(true);
+            }
+        })
+        .catch(error => console.log(error))
+    };
 
     function deleteCategory(selectedCategory) {
         console.log(selectedCategory);
@@ -120,7 +152,7 @@ export default function ExpenseApp({ token, setToken, setFailedJWTValidation, se
             }   
         })
         .catch(error => console.log(error))
-    }
+    };
 
     function addExpense(newExpense) {
         console.log(newExpense);
@@ -161,9 +193,14 @@ export default function ExpenseApp({ token, setToken, setFailedJWTValidation, se
             showLinks={true}
             logOutHandler={logOutHandler}
             manageCategoriesHandler={manageCategoriesHandler}
+            manageBudgetHandler={manageBudgetHandler}
         />
         <CategoriesDialog open={categoriesOpen} setOpen={setCategoriesOpen} categories={categories}
             setCategories={setCategories} addNewCategory={addNewCategory} deleteCategory={deleteCategory}
+        />
+        <BudgetDialog
+                open={budgetDialogOpen} setOpen={setBudgetDialogOpen} categories={categories}
+                setCategories={setCategories} updateBudgets={updateBudgets}
         />
         <div className="form-table-container">
             <Form   
@@ -176,6 +213,7 @@ export default function ExpenseApp({ token, setToken, setFailedJWTValidation, se
                 />
             <EnhancedTable expenseList={expenses} onDelete={deleteExpense} />
         </div>
+        <Stats expenses={expenses} categories={categories}/>
         <Footer />       
     </div>);
 }

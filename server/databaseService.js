@@ -8,7 +8,8 @@ const devDatabaseString = {
     host: "localhost",
     user: "root",
     password: "",
-    database: "expensedb"
+    database: "expensedb",
+    multipleStatements: true,
 };
 
 function connectToMySQLDatabase() {
@@ -68,7 +69,6 @@ function retrieveAllExpenses(res, db, userID) {
         if (err) {
             console.log(err);
         } else {
-            console.log(result);
             res.send(JSON.stringify(result));
         }
     });
@@ -105,11 +105,34 @@ function retrieveAllCategories(res, db, userID) {
         if (err) {
             console.log(err);
         } else {
-            console.log(result);
             res.send(JSON.stringify(result));
         }
     });
 }
+
+function makeUpdateQuery(newBudgets) {
+    let baseQuery = "";
+
+    newBudgets.forEach(budgetItem => {
+        let budget = budgetItem.budget === "" ? 0 : budgetItem.budget; 
+        baseQuery += `UPDATE categories SET budget = ${budget} WHERE categoryID = ${budgetItem.id};`;
+    });
+
+    return baseQuery;
+}
+
+function updateBudgets(res, newBudgets, db) {
+    let sql = makeUpdateQuery(newBudgets);
+    db.query(sql, (err, result) => {
+        if (err) {
+            console.log(err);
+            res.status(500).send("There was an internal database error");
+        } else {
+            console.log(result);
+            res.send("Added new budgets!");
+        }
+    })
+};
 
 function addCategoryToDB(res, db, {categoryName, userID}) {
     let sql = `INSERT INTO categories (categoryName, userID) VALUES (?, ?)`;
@@ -156,4 +179,5 @@ module.exports = {
     retrieveAllCategories,
     addCategoryToDB,
     deleteCategory,
+    updateBudgets,
 }

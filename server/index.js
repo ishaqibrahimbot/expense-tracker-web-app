@@ -6,7 +6,7 @@ const bcrypt = require("bcrypt");
 const {GenerateJWT, ValidateJWT, DecodeJWT} = require("./tokenManager.js");
 const { stringifyIds, connectToMySQLDatabase, insertExpenseIntoDB, 
     retrieveAllExpenses, deleteExpenses, addUser, retrieveAllCategories,
-    addCategoryToDB, deleteCategory } = require("./databaseService.js");
+    addCategoryToDB, deleteCategory, updateBudgets } = require("./databaseService.js");
 
 
 //////////////////////////////
@@ -158,6 +158,21 @@ app.get("/categories", (req, res) => {
         res.send(false);
     }
 
+});
+
+// Update the budgets
+app.put("/categories/budget", (req, res) => {
+    const authStr = req.headers.authorization;
+    const token = authStr.slice(7);
+
+    if (ValidateJWT(token, key)) {
+        const userDetails = DecodeJWT(token);
+        const userID = userDetails.userId;
+        const newBudgets = req.body.newBudgets;
+        updateBudgets(res, newBudgets, db);
+    } else {
+        res.status(400).send(false);
+    }
 });
 
 //Add a new category

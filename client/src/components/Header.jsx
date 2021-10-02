@@ -41,7 +41,7 @@ const useHeaderStyles = makeStyles(theme => ({
     }
 }));
 
-function Header({ showLinks, logOutHandler, manageCategoriesHandler }) {
+function Header({ showLinks, logOutHandler, manageCategoriesHandler, manageBudgetHandler }) {
     const classes = useHeaderStyles();
     const isMobile = useMediaQuery({query: '(max-width: 520px'});
 
@@ -53,6 +53,10 @@ function Header({ showLinks, logOutHandler, manageCategoriesHandler }) {
                     className={isMobile ? classes.actionLinksMobile : classes.actionLinks}
                     onClick={manageCategoriesHandler}
                     >Manage Categories</IconButton>
+                <IconButton 
+                    className={isMobile ? classes.actionLinksMobile : classes.actionLinks}
+                    onClick={manageBudgetHandler}
+                    >Manage Budgets</IconButton>
                 <IconButton 
                     className={isMobile ? classes.actionLinksMobile : classes.actionLinks}
                     onClick={logOutHandler}
