@@ -113,8 +113,8 @@ const Stats = props => {
                     return (
                             <div style={{
                                 display: 'flex',
-                                width: 350,
-                                height: 35,
+                                width: "95%",
+                                height: 50,
                                 marginBottom: 5,
                                 marginTop: 5,
                                 paddingBottom: 5,
@@ -126,7 +126,7 @@ const Stats = props => {
                                 <div style={{
                                     display: 'flex',
                                     width: '30%',
-                                    height: 20,
+                                    height: 30,
                                     fontSize: 13,
                                 }}>
                                     <p>{category.categoryName}</p>
@@ -134,7 +134,7 @@ const Stats = props => {
                                 <div style={{
                                     display: 'flex',
                                     width: '25%',
-                                    height: 20,
+                                    height: 30,
                                     justifyContent: 'center',
                                 }}>
                                     <p>{(expenses.length > 0) && remainingBudget}</p>
