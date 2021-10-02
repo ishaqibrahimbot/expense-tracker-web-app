@@ -59,7 +59,7 @@ const Stats = props => {
 
     return (
         <div style={{
-            width: isMobile ? '80%' : '35%',
+            width: isMobile ? '90%' : '35%',
             minHeight: 100,
             display: 'flex',
             paddingBottom: 30,
