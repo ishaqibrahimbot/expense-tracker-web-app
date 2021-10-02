@@ -6,7 +6,7 @@ const getFilteredExpenses = expenses => {
     let monthStart = new Date();
     monthStart.setDate(1);
     monthStart.setHours(0, 0, 0);
-    console.log("MONTH START: ", monthStart);
+    console.log("MONTH START: ", monthStart.toUTCString());
     
     let filteredExpenses = expenses.filter((expense, i) => {
         return new Date(expense.date) >= monthStart;
